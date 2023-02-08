@@ -1,0 +1,53 @@
+.POSIX:
+.SUFFIXES:
+.SUFFIXES: .c .uto
+
+VERSION    = 1.0.0
+
+BINDIR     = @BINDIR@
+CC         = @CC@
+CCOV       = gcov
+CFLAGS     = @CFLAGS@ -I. -Isrc
+CFLAGS_COV = @CFLAGS_COV@
+CFLAGS_SAN = @CFLAGS_SAN@
+INCLUDEDIR = @PREFIX@/include
+LD         = @LD@
+LIBDIR     = @PREFIX@/lib
+PREFIX     = @PREFIX@
+SRCDIR     = @SRCDIR@
+
+.PHONY: all
+all: false_int false.coverage false.fuzz
+
+false_int: interpreter.c src/false.c utils/file.c src/stack.c src/slice.c src/storage.c src/token.c
+	$(CC) $(CFLAGS) $^ -o $@
+
+.c.uto:
+	$(CC) $(CFLAGS) $(CFLAGS_COV) $(CFLAGS_SAN) -c $^ -o $@
+
+false.coverage: src/stack.c src/slice.c src/storage.c src/token.c src/test_false.c src/false.uto
+	$(CC) $(CFLAGS) $(CFLAGS_SAN) $(CFLAGS_COV) $^ -o $@
+	./$@
+	$(CCOV) src/false.c
+	! grep "#####" false.c.gcov |grep -ve "// UNREACHABLE$$"
+
+false.fuzz: src/stack.c src/slice.c src/storage.c src/token.c src/false.c src/fuzz.c
+	$(CC) $(CFLAGS) $(CFLAGS_SAN) $^ -o $@
+	./$@
+
+.PHONY: install
+install: false_int
+	mkdir -p $(BINDIR)
+	install -m 755 false_int $(BINDIR)/false_int
+
+.PHONY: uninstall
+uninstall:
+	rm -f ${BINDIR}/false_int
+
+.PHONY: clean
+clean:
+	rm -rf **/*.uto *.gc?? **/*.gc?? false_int false.coverage false.fuzz
+
+.PHONY: distclean
+distclean: clean
+	rm -f Makefile config.status

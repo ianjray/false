@@ -1,0 +1,11 @@
+test_compiler_flags ${CC} CFLAGS OPTIONAL "-Wall" "-Wextra" "-Werror"
+
+test_compiler_flags ${CC} CFLAGS_COV OPTIONAL "--coverage" "--dumpbase ''"
+
+test_compiler_flags ${CC} CFLAGS_SAN OPTIONAL "-fsanitize=address"
+
+feature_test_macro ${CC} stdio.h _GNU_SOURCE asprintf 'asprintf(NULL, "nul");'
+
+populate "${SRCDIR}"
+populate "${SRCDIR}/src"
+populate "${SRCDIR}/utils"

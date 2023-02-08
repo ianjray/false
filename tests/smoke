@@ -1,0 +1,45 @@
+#!/bin/sh
+
+run() {
+    ./false_int $*
+}
+
+pass() {
+    echo "PASS: $*" >&2
+}
+
+fail() {
+    echo "FAIL: $*" >&2
+    exit 1
+}
+
+good() {
+    run $* || fail $*
+    pass $*
+}
+
+bad() {
+    run $* && fail $*
+    pass $*
+}
+
+make || exit
+
+good tests/basic.f
+
+good tests/add.f 3 4
+good tests/factorial.f
+good tests/factorialv2.f
+good tests/gcd.f
+good tests/head.f < makefile
+good tests/sierpinski.f 3
+good tests/tail.f < makefile
+
+# https://strlen.com/files/lang/false/False12b.zip
+PROGRAM="False12b/contrib/Herb_Wollman/Translate.f"
+if [ -f "${PROGRAM}" ]
+then
+    # ISO-8859 text
+    echo abcABC | LC_ALL="en_US.ISO-8859" ./false_int "${PROGRAM}" --input "065 066" | grep -q abcBBC || fail "${PROGRAM}"
+    pass "${PROGRAM}"
+fi
