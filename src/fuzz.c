@@ -72,6 +72,7 @@ int main(void)
         '-',
         '*',
         '/',
+        '<',
         '=',
         '>',
         '&',
@@ -94,6 +95,20 @@ int main(void)
         '!',
         '?',
         '#',
+        POUND_SIGN,
+        SECTION_SIGN,
+        LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK,
+        RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK,
+        INVERTED_QUESTION_MARK,
+        LATIN_CAPITAL_LETTER_O_WITH_STROKE,
+        DIVISION_SIGN,
+        PER_MILLE_SIGN,
+        EURO_SIGN,
+        INTEGRAL,
+        NOT_EQUAL_TO,
+        LESS_THAN_OR_EQUAL_TO,
+        GREATER_THAN_OR_EQUAL_TO,
+        XOR,
     };
 
     char *args[] = { "stdin" };

@@ -188,6 +188,116 @@ static wchar_t dispatch(wchar_t wc)
     return 0;
 }
 
+static void check_shift_operands(int x, int y)
+{
+    if (x < 0) {
+        fatal("shifting a negative signed value is undefined");
+    } else if (y < 0) {
+        fatal("shift count is negative");
+    } else if (y >= 32) {
+        fatal("shift count >= width of type");
+    }
+}
+
+static void process(struct slice s);
+
+/// Dispatch an extended operation.
+static wchar_t dispatch_extended(wchar_t wc)
+{
+    switch (wc) {
+        case POUND_SIGN:
+            stack_over();
+            break;
+
+        case PER_MILLE_SIGN:
+            stack_nip();
+            break;
+
+        case EURO_SIGN:
+            stack_tuck();
+            break;
+
+        case LATIN_CAPITAL_LETTER_O_WITH_STROKE:
+            stack_2dup();
+            break;
+
+        case SECTION_SIGN:
+            stack_push(token_make_number((int)stack_size()));
+            break;
+
+        case NOT_EQUAL_TO:
+            stack_push(token_make_number(truth(!compare())));
+            break;
+
+        case '<':
+        case LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK:
+        case RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK:
+        case DIVISION_SIGN:
+        case LESS_THAN_OR_EQUAL_TO:
+        case GREATER_THAN_OR_EQUAL_TO:
+        case XOR:
+        {
+            int y = stack_pop_number();
+            int x = stack_pop_number();
+            switch (wc) {
+                case '<':
+                    stack_push(token_make_number(truth(x < y)));
+                    break;
+                case LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK:
+                    check_shift_operands(x, y);
+                    stack_push(token_make_number(x << y));
+                    break;
+                case RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK:
+                    check_shift_operands(x, y);
+                    stack_push(token_make_number(x >> y));
+                    break;
+                case DIVISION_SIGN:
+                    if (y == 0) {
+                        fatal("divide by zero");
+                    } else {
+                        div_t d = div(x, y);
+                        stack_push(token_make_number(d.rem));
+                        stack_push(token_make_number(d.quot));
+                    }
+                    break;
+                case LESS_THAN_OR_EQUAL_TO:
+                    stack_push(token_make_number(truth(x <= y)));
+                    break;
+                case GREATER_THAN_OR_EQUAL_TO:
+                    stack_push(token_make_number(truth(x >= y)));
+                    break;
+                case XOR:
+                    stack_push(token_make_number(x ^ y));
+                    break;
+            }
+            break;
+        }
+
+        case INTEGRAL:
+            if (!stack_pop_number()) {
+                fatal("assertion failed");
+            }
+            break;
+
+        case INVERTED_QUESTION_MARK:
+        {
+            struct slice false_branch = stack_pop_lambda();
+            struct slice true_branch = stack_pop_lambda();
+            if (stack_pop_number()) {
+                process(true_branch);
+            } else {
+                process(false_branch);
+            }
+            break;
+        }
+
+        default:
+            return wc;
+    }
+
+    return 0;
+}
+
 /// Process a slice of symbols.
 static void process(struct slice s)
 {
@@ -341,6 +451,10 @@ static void process(struct slice s)
 
             default:
                 wc = dispatch(wc);
+
+                if (g_.config.extensions) {
+                    wc = dispatch_extended(wc);
+                }
 
                 if (iswlower(wc)) {
                     stack_push(token_make_variable(wc));

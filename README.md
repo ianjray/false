@@ -12,6 +12,7 @@ false_int [OPTIONS...] FILE [ARGUMENTS...]
 Interpret a 'FALSE' program.
 
 Options:
+  -e, --extensions      Enable extensions.
   -h, --help            Print this message and exit.
   -i, --input STRING    Input string.
   -v, --verbose         Print debug messages.
@@ -106,6 +107,21 @@ Expanded for explanation, with stack contents shown in comments:
 Note that the sequence `$@$@$@\` is equivalent to (the equal length) `\1ø1ø1ø`.
 
 
+# Extensions
+
+Extensions are available with the ``--extensions`` flag.
+
+The various extensions can make `FALSE` programs **slightly** more succinct (at the cost of compatibility).
+For example, the *division-based* greatest common divisor algorithm may be expressed as:
+
+```
+10 15 [$0=~][$@$@$@\/*-]#%  5=∫
+10 15 [$0≠][$@$@$@\/*-]#%   5=∫
+10 15 [$0≠][€Ø/*-]#%        5=∫  { tuck, 2dup }
+10 15 [$0≠][€÷%]#%          5=∫  { tuck, /MOD }
+```
+
+
 # Alternatives and Variants
 
 * [DUP](https://esolangs.org/wiki/DUP)
@@ -125,7 +141,7 @@ The sequence `;!` could be simplified to `!` *if* the interpreter were designed 
 This would be backwards compatible.
 
 Per `Falsish` there are a number of *extended* punctuation and mathematical characters that are easily typed on macOS.
-These may be used to add new functionality.
+Some of these are used to provide extended functionality (see the ``--extensions`` flag).
 
 The *flush* operator is seldom implemented, but is needed to support some *interactive* programs (including False1.2b `contrib/Marcel_van_Kervinck/tic.f`).
 

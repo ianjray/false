@@ -26,6 +26,11 @@ bool stack_empty(void)
     return stack_.depth == 0;
 }
 
+size_t stack_size(void)
+{
+    return stack_.depth;
+}
+
 /// Log stack operation.
 static void slog(const char *op, char *rhs)
 {
@@ -135,6 +140,36 @@ void stack_rot(void)
 {
     rot();
     slog("rot", NULL);
+}
+
+void stack_over(void)
+{
+    require(2);
+    push(stack_.stack[stack_.depth - 2]);
+    slog("over", NULL);
+}
+
+void stack_nip(void)
+{
+    swap();
+    pop();
+    slog("nip", NULL);
+}
+
+void stack_tuck(void)
+{
+    dup();
+    rot();
+    rot();
+    slog("tuck", NULL);
+}
+
+void stack_2dup(void)
+{
+    require(2);
+    push(stack_.stack[stack_.depth - 2]);
+    push(stack_.stack[stack_.depth - 2]);
+    slog("2dup", NULL);
 }
 
 void stack_pick(size_t n)

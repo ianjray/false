@@ -35,6 +35,8 @@ good tests/head.f < makefile
 good tests/sierpinski.f 3
 good tests/tail.f < makefile
 
+good --extensions tests/extended.f
+
 # https://strlen.com/files/lang/false/False12b.zip
 PROGRAM="False12b/contrib/Herb_Wollman/Translate.f"
 if [ -f "${PROGRAM}" ]

@@ -159,6 +159,13 @@ static void test_token(struct config config)
     assert(0 == r);
     assert(!strcmp(output, "!6,2,4"));
 
+    r = testcase(config, "0∫");
+    assert(1 == r);
+
+    r = testcase(config, "1∫");
+    assert(0 == r);
+    assert(!strcmp(output, ""));
+
     r = testcase(config, "1a:a;.");
     assert(0 == r);
     assert(!strcmp(output, "1"));
@@ -202,9 +209,20 @@ static void test_token(struct config config)
     r = testcase(config, "1 0 /");
     assert(1 == r);
 
+    r = testcase(config, "22 4 ÷ .',,.");
+    assert(0 == r);
+    assert(!strcmp(output, "5,2"));
+
+    r = testcase(config, "22 0 ÷");
+    assert(1 == r);
+
     r = testcase(config, "20 4 = .");
     assert(0 == r);
     assert(!strcmp(output, "0"));
+
+    r = testcase(config, "20 4 ≠ .");
+    assert(0 == r);
+    assert(!strcmp(output, "-1"));
 
     // Stack type mismatch.
     r = testcase(config, "a 0 = .");
@@ -227,6 +245,18 @@ static void test_token(struct config config)
     assert(0 == r);
     assert(!strcmp(output, "-1"));
 
+    r = testcase(config, "20 4 < .");
+    assert(0 == r);
+    assert(!strcmp(output, "0"));
+
+    r = testcase(config, "3 3 ≥ .");
+    assert(0 == r);
+    assert(!strcmp(output, "-1"));
+
+    r = testcase(config, "3 3 ≤ .");
+    assert(0 == r);
+    assert(!strcmp(output, "-1"));
+
     r = testcase(config, "7 2 & .");
     assert(0 == r);
     assert(!strcmp(output, "2"));
@@ -238,6 +268,39 @@ static void test_token(struct config config)
     r = testcase(config, "1_ ~ .");
     assert(0 == r);
     assert(!strcmp(output, "0"));
+
+    r = testcase(config, "0 0 ⊻ .");
+    assert(0 == r);
+    assert(!strcmp(output, "0"));
+
+    r = testcase(config, "2 2 ⊻ .");
+    assert(0 == r);
+    assert(!strcmp(output, "0"));
+
+    r = testcase(config, "4 2 ⊻ .");
+    assert(0 == r);
+    assert(!strcmp(output, "6"));
+
+    r = testcase(config, "2 1_ «");
+    assert(1 == r);
+
+    r = testcase(config, "2_ 1 «");
+    assert(1 == r);
+
+    r = testcase(config, "2 32 «");
+    assert(1 == r);
+
+    r = testcase(config, "2 1 « .");
+    assert(0 == r);
+    assert(!strcmp(output, "4"));
+
+    r = testcase(config, "16 2 » .");
+    assert(0 == r);
+    assert(!strcmp(output, "4"));
+
+    r = testcase(config, "9 8 § . %%");
+    assert(0 == r);
+    assert(!strcmp(output, "2"));
 
     r = testcase(config, "3 $ .',,.");
     assert(0 == r);
@@ -254,6 +317,22 @@ static void test_token(struct config config)
     r = testcase(config, "1 2 3 @ ...");
     assert(0 == r);
     assert(!strcmp(output, "132"));
+
+    r = testcase(config, "1 2 £ ...");
+    assert(0 == r);
+    assert(!strcmp(output, "121"));
+
+    r = testcase(config, "1 2 ‰ .");
+    assert(0 == r);
+    assert(!strcmp(output, "2"));
+
+    r = testcase(config, "1 2 € ...");
+    assert(0 == r);
+    assert(!strcmp(output, "212"));
+
+    r = testcase(config, "1 2 Ø ....");
+    assert(0 == r);
+    assert(!strcmp(output, "2121"));
 
     // ( xu ... x1 x0 u -- xu ... x1 x0 xu )
     r = testcase(config, "1 2 3 0O ....");
@@ -276,6 +355,14 @@ static void test_token(struct config config)
     assert(!strcmp(output, "T"));
 
     r = testcase(config, "['F,]f: ['T,]t: 0$f;?~t;?");
+    assert(0 == r);
+    assert(!strcmp(output, "T"));
+
+    r = testcase(config, "0~ ['T,]['F,]¿");
+    assert(0 == r);
+    assert(!strcmp(output, "T"));
+
+    r = testcase(config, "0  ['F,]['T,]¿");
     assert(0 == r);
     assert(!strcmp(output, "T"));
 
@@ -328,6 +415,7 @@ int main(void)
 {
     struct config config;
 
+    config.extensions  = true;
     config.fatal       = nop_fatal;
     config.log_trace   = nop_log_trace;
     config.log_stack   = NULL;
