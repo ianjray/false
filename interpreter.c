@@ -140,6 +140,7 @@ static void usage(void)
             "Interpret a 'false' program.\n"
             "\n"
             "Options:\n"
+            "  -e, --extensions      Enable extensions.\n"
             "  -h, --help            Print this message and exit.\n"
             "  -i, --input STRING    Input string.\n"
             "  -v, --verbose         Print debug messages.\n"
@@ -169,6 +170,7 @@ int main(int argc, char **argv)
 {
     struct config config;
 
+    config.extensions  = false;
     config.fatal       = fatal;
     config.log_trace   = NULL;
     config.log_stack   = NULL;
@@ -206,6 +208,10 @@ int main(int argc, char **argv)
         } else if (!strcmp(arg, "-h") || !strcmp(arg, "--help")) {
             usage();
             return EXIT_SUCCESS;
+
+        } else if (!strcmp(arg, "-e") || !strcmp(arg, "--extensions")) {
+            argc = drop(i, argc, argv);
+            config.extensions = true;
 
         } else if (arg[0] == '-') {
             usage();

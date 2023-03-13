@@ -12,6 +12,7 @@ false_int [OPTIONS...] FILE [ARGUMENTS...]
 Interpret a 'false' program.
 
 Options:
+  -e, --extensions      Enable extensions.
   -h, --help            Print this message and exit.
   -i, --input STRING    Input string.
   -v, --verbose         Print debug messages.
@@ -87,6 +88,16 @@ x;.
 This is an expression of the *division-based* algorithm.
 
 ```
+// https://en.wikipedia.org/wiki/Euclidean_algorithm#Implementations
+function gcd(a, b)
+    while b ≠ 0
+        t := b
+        b := a mod b
+        a := t
+    return a
+```
+
+```
 10 15$ [0=~][$@$@$@\/*-$]#%. { gcd(10,15)=5 }
 ```
 
@@ -138,4 +149,22 @@ Making it optional would be an opportunity for more concise code (and would be b
 
 Per *Falsish* there are a number of *extended* punctuation and mathematical characters that are easily typed on macOS.
 These may be used to add new functionality.
+
+
+# Extensions
+
+Extensions are available with the ``--extensions`` flag.
+
+The various extensions can make *False* programs **slightly** more succinct (at the cost of compatibility).
+For example, the *division-based* greatest common divisor algorithm:
+
+```
+10 15$ [0=~][$@$@$@\/*-$]#% 5=∫
+```
+
+Becomes:
+
+```
+10 15 [$0≠][€÷%]#% 5=∫
+```
 

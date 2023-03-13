@@ -23,6 +23,11 @@ bool stack_empty(void)
     return stack_.depth == 0;
 }
 
+size_t stack_size(void)
+{
+    return stack_.depth;
+}
+
 static char * token_print(struct token token)
 {
     char * buf = NULL;
@@ -103,6 +108,14 @@ static void rot(void)
     push(x);
 }
 
+static void swap(void)
+{
+    struct token x1 = pop();
+    struct token x = pop();
+    push(x1);
+    push(x);
+}
+
 void stack_push(struct token token)
 {
     push(token);
@@ -115,12 +128,26 @@ void stack_dup(void)
     log("dup", token_none());
 }
 
+void stack_dup1(void)
+{
+    if (stack_.depth < 2) {
+        stack_.fatal("stack underflow");
+    }
+    push(stack_.stack[stack_.depth - 2]);
+    log("dup1", token_none());
+}
+
+void stack_dup_x1(void)
+{
+    dup();
+    rot();
+    rot();
+    log("dup_x1", token_none());
+}
+
 void stack_swap(void)
 {
-    struct token x1 = pop();
-    struct token x = pop();
-    push(x1);
-    push(x);
+    swap();
     log("swap", token_none());
 }
 
@@ -137,6 +164,13 @@ void stack_pick(size_t n)
     }
     stack_push(stack_.stack[stack_.depth - 1 - n]);
     log("pick", token_none());
+}
+
+void stack_nip(void)
+{
+    swap();
+    pop();
+    log("nip", token_none());
 }
 
 struct token stack_pop(void)

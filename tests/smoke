@@ -37,6 +37,10 @@ good tests/char.f
 
 good tests/basic.f
 
+bad  --extensions tests/builtin-assert-bad.f
+good --extensions tests/builtin-assert-good.f
+good --extensions tests/extended.f
+
 good tests/add.f 3 4
 good tests/factorial.f
 good tests/factorialv2.f

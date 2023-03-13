@@ -62,6 +62,7 @@ int main(void)
 {
     struct config config;
 
+    config.extensions  = true;
     config.fatal       = nop_fatal;
     config.log_trace   = nop_log_trace;
     config.log_stack   = nop_log_stack;
@@ -107,6 +108,13 @@ int main(void)
         config.argc = 1;
         config.argv = args;
         config.str = "1 0/";
+        output_len = 0;
+        r = interpret(config);
+        assert(1 == r);
+
+        config.argc = 1;
+        config.argv = args;
+        config.str = "1 0\u00f7";  // DIVISION_SIGN
         output_len = 0;
         r = interpret(config);
         assert(1 == r);
@@ -164,6 +172,20 @@ int main(void)
         assert(1 == output_len);
         assert('T' == output[0]);
 
+        config.str = "0~['T,]['F,]¿";
+        output_len = 0;
+        r = interpret(config);
+        assert(0 == r);
+        assert(1 == output_len);
+        assert('T' == output[0]);
+
+        config.str = "0['F,]['T,]¿";
+        output_len = 0;
+        r = interpret(config);
+        assert(0 == r);
+        assert(1 == output_len);
+        assert('T' == output[0]);
+
         config.str = "1[$100\\>][1+]#.";
         output_len = 0;
         r = interpret(config);
@@ -172,6 +194,16 @@ int main(void)
         assert('1' == output[0]);
         assert('0' == output[1]);
         assert('0' == output[2]);
+
+        config.str = "4_ 3«";
+        output_len = 0;
+        r = interpret(config);
+        assert(1 == r);
+
+        config.str = "4 3_«";
+        output_len = 0;
+        r = interpret(config);
+        assert(1 == r);
     }
 
     /* Ad-hoc fuzz test of all supported symbols.
@@ -199,6 +231,7 @@ int main(void)
             '-',
             '*',
             '/',
+            '<',
             '=',
             '>',
             '&',
@@ -221,6 +254,20 @@ int main(void)
             '!',
             '?',
             '#',
+            POUND_SIGN,
+            SECTION_SIGN,
+            LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK,
+            RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK,
+            INVERTED_QUESTION_MARK,
+            LATIN_CAPITAL_LETTER_O_WITH_STROKE,
+            DIVISION_SIGN,
+            PER_MILLE_SIGN,
+            EURO_SIGN,
+            INTEGRAL,
+            NOT_EQUAL_TO,
+            LESS_THAN_OR_EQUAL_TO,
+            GREATER_THAN_OR_EQUAL_TO,
+            XOR,
         };
 
         const size_t iterations = 10000;

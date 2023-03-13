@@ -11,12 +11,23 @@ void stack_init(void (*fatal)(const char *msg), void (*log)(const char *op, cons
 /// @return bool True if stack is empty.
 bool stack_empty(void);
 
+/// @return size_t Stack size.
+size_t stack_size(void);
+
 /// Push @c token.
 void stack_push(struct token token);
 
 /// Duplicate top of stack.
 /// @note Calls @c fatal on underflow.
 void stack_dup(void);
+
+/// Duplicate second item on stack.
+/// @note Calls @c fatal on underflow.
+void stack_dup1(void);
+
+/// Insert a copy of the top value into the stack two values from the top.
+/// @note Calls @c fatal on underflow.
+void stack_dup_x1(void);
 
 /// Swap top two elements.
 /// @note Calls @c fatal on underflow.
@@ -29,6 +40,10 @@ void stack_rot(void);
 /// Pick element @c n.
 /// @note Calls @c fatal on underflow.
 void stack_pick(size_t n);
+
+/// Drop second item on stack.
+/// @note Calls @c fatal on underflow.
+void stack_nip(void);
 
 /// Pop.
 /// @note Calls @c fatal on underflow.
