@@ -172,11 +172,37 @@ void stack_2dup(void)
     slog("2dup", NULL);
 }
 
+void stack_reverse(void)
+{
+    for (size_t i = 0; i < stack_.depth / 2; ++i) {
+        struct token token = stack_.stack[stack_.depth - 1 - i];
+        stack_.stack[stack_.depth - 1 - i] = stack_.stack[i];
+        stack_.stack[i] = token;
+    }
+    slog("rev", NULL);
+}
+
 void stack_pick(size_t n)
 {
     require(n + 1);
     push(stack_.stack[stack_.depth - 1 - n]);
     slog("pick", NULL);
+}
+
+void stack_roll(size_t n)
+{
+    size_t top;
+    size_t pos;
+    size_t len;
+    struct token token;
+    require(n + 1);
+    top = stack_.depth - 1;
+    pos = top - n;
+    len = top - pos;
+    token = stack_.stack[pos];
+    memmove(&stack_.stack[pos], &stack_.stack[pos + 1], len * sizeof(struct token));
+    stack_.stack[top] = token;
+    slog("roll", NULL);
 }
 
 struct token stack_pop(void)
