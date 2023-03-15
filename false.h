@@ -65,8 +65,10 @@
  Ext (            a b -- b )                ‰      nip                       (macOS Shift-Option-r)
  Ext (            a b -- b a b )            €      tuck                      (macOS Shift-Option-2)
  Ext (            a b -- a b a b )          Ø      2dup                      (macOS Shift-Option-o)
+ Ext (          a b c -- c b a )            ®      reverse                   (macOS Option-r)
      ( xu ... x1 x0 u -- xu ... x1 x0 xu )  ø      pick                      (macOS Option-o)
      ( xu ... x1 x0 u -- xu ... x1 x0 xu )  O      pick
+ Ext ( xu xu-1...x0 u -- xu-1...x0 xu )     ™      roll                      (macOS Option-2)
 
      (      bool func -- )                  ?      if-then
  Ext ( bool func func -- )                  ¿      if-then-else              (macOS Option-?)
