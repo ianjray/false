@@ -49,9 +49,16 @@ void stack_tuck(void);
 /// @note Calls @c fatal on underflow.
 void stack_2dup(void);
 
+/// Reverse stack content.
+void stack_reverse(void);
+
 /// Pick element @c n.
 /// @note Calls @c fatal on underflow.
 void stack_pick(size_t n);
+
+/// Roll element @c n to top of stack.
+/// @note Calls @c fatal on underflow.
+void stack_roll(size_t n);
 
 /// Pop.
 /// @note Calls @c fatal on underflow.

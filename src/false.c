@@ -225,6 +225,14 @@ static wchar_t dispatch_extended(wchar_t wc)
             stack_push(token_make_number((int)stack_size()));
             break;
 
+        case REGISTERED_SIGN:
+            stack_reverse();
+            break;
+
+        case TRADE_MARK_SIGN:
+            stack_roll((size_t)stack_pop_number());
+            break;
+
         case NOT_EQUAL_TO:
             stack_push(token_make_number(truth(!compare())));
             break;

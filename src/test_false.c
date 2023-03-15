@@ -334,6 +334,10 @@ static void test_token(struct config config)
     assert(0 == r);
     assert(!strcmp(output, "2121"));
 
+    r = testcase(config, "1 2 3 ® ...");
+    assert(0 == r);
+    assert(!strcmp(output, "123"));
+
     // ( xu ... x1 x0 u -- xu ... x1 x0 xu )
     r = testcase(config, "1 2 3 0O ....");
     assert(0 == r);
@@ -348,6 +352,21 @@ static void test_token(struct config config)
     assert(!strcmp(output, "1321"));
 
     r = testcase(config, "1 2 3 3O ....");
+    assert(1 == r);
+
+    r = testcase(config, "1 2 3 0™ ...");
+    assert(0 == r);
+    assert(!strcmp(output, "321"));
+
+    r = testcase(config, "1 2 3 1™ ...");
+    assert(0 == r);
+    assert(!strcmp(output, "231"));
+
+    r = testcase(config, "1 2 3 2™ ...");
+    assert(0 == r);
+    assert(!strcmp(output, "132"));
+
+    r = testcase(config, "1 2 3 3™ ...");
     assert(1 == r);
 
     r = testcase(config, "['T,]t: 0~ t;?");
