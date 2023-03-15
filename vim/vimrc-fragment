@@ -1,0 +1,2 @@
+au BufRead,BufNewFile *.f set filetype=false
+au Syntax false runtime! syntax/false.vim
