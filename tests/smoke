@@ -37,6 +37,18 @@ good tests/tail.f < makefile
 
 good --extensions tests/extended.f
 
+good --extensions tests/atoi.f --input 42 > r
+good --extensions tests/ctype.f
+good --extensions tests/dot-product.f
+good --extensions tests/fstrip.f < tests/fstrip.f > r
+good --extensions r              < tests/fstrip.f > r1
+diff r r1 || fail "fstrip"
+rm -f r r1
+
+good --extensions tests/spc2tab.f < tests/spc2tab.test > r
+diff r tests/spc2tab.expected || fail "spc2tab"
+rm -f r
+
 good --extensions tests/tailv2.f < makefile
 
 # https://strlen.com/files/lang/false/False12b.zip
