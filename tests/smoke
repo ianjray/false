@@ -45,6 +45,15 @@ good --extensions r              < tests/fstrip.f > r1
 diff r r1 || fail "fstrip"
 rm -f r r1
 
+for N in 0 1 7 8 9 15 16 17
+do
+    cat /dev/urandom | env LC_ALL=C tr -dc 'a-zA-Z0-9' | dd bs=1 count=${N} > r 2>/dev/null
+    good --extensions tests/hexdump.f < r > r1
+    hexdump -C r > r2
+    diff r1 r2 || fail
+    rm -f r r1 r2
+done
+
 good --extensions tests/spc2tab.f < tests/spc2tab.test > r
 diff r tests/spc2tab.expected || fail "spc2tab"
 rm -f r
